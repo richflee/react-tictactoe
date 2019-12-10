@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack",
     "start": "webpack-dev-server --open --mode development",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "author": "Richard Lee",
   "license": "ISC",
