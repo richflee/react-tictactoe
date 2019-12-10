@@ -1,7 +1,16 @@
 import * as React from "react";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Home from "./Home/Home";
-require('./App.css')
+import styled from 'styled-components';
+require('./App.css');
+
+
+const StyledAppContainer = styled.div`
+    color: #fff;
+    font-size: 1em;
+    padding: 0.8em;
+    text-align: center;
+`;
 
 
 interface AppComponentState {
@@ -17,10 +26,10 @@ class App extends React.Component<any, AppComponentState> {
     render() {
         return (
             <Router>
-                <div>
+                <StyledAppContainer>
                     <h1>{this.state.title}</h1>
                     <Route exact path="/" component={Home} />
-                </div>
+                </StyledAppContainer>
             </Router>
         );
     }

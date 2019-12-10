@@ -10,16 +10,24 @@ enum GameStatus {
     COMPLETED
 }
 
+const StyledGameBoardWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
+
 const StyledGameBoard = styled.div`
-    background-color: yellow;
-    border: 1px solid blue;
+    border: 1px solid #e9ea77;
     font-size: 1em;
+    max-width: 600px;
     > .gameBoardContainer__row {
         display: flex;
         
         > * {
-            border: 1px solid blue;
+            border: 1px solid #e9ea77;
             flex-grow: 1;
+            min-width: 2em;
+            min-height: 2em;
             padding: 5px;
             text-align: center;
         }
@@ -29,7 +37,8 @@ const StyledGameBoard = styled.div`
 interface GameBoardState {
     board: string[][],
     currentPlayer: 'x' | 'o',
-    gameStatus: GameStatus
+    gameStatus: GameStatus,
+    winner: string
 }
 
 export class GameBoard extends React.Component<any, GameBoardState> {
@@ -52,7 +61,9 @@ export class GameBoard extends React.Component<any, GameBoardState> {
 
         this.setState({
             board: newBoard,
-            currentPlayer: player
+            currentPlayer: player,
+            winner: undefined,
+            gameStatus: GameStatus.NEW
         });
     }
 
@@ -77,7 +88,12 @@ export class GameBoard extends React.Component<any, GameBoardState> {
     }
 
     _isGameWon(player: string, board: string[][]) {
-        return GameUtils.isGameWon(player, board);
+
+        const flatBoard = board.reduce((prev, curr) => {
+            return prev.concat(curr);
+        }, [])
+
+        return GameUtils.isGameWon(player, flatBoard);
     }
 
     _updateCellState(colIndex: number, rowIndex: number) {
@@ -95,19 +111,22 @@ export class GameBoard extends React.Component<any, GameBoardState> {
 
             if (won) {
                 this.setState({
-                    gameStatus: GameStatus.WON
+                    gameStatus: GameStatus.WON,
+                    winner: won ? currPlayer : undefined
                 })
-                console.log('GAME WON: ' + currPlayer);
             }
         }
     }
 
     _renderGameStatus(): JSX.Element {
-        if (this.state.gameStatus == GameStatus.IN_PROGRESS) {
-            return <div>Game in progress</div>
+        if (this.state.gameStatus == GameStatus.IN_PROGRESS || this.state.gameStatus == GameStatus.NEW) {
+            return <div><h4>Next move: '{this.state.currentPlayer}'</h4></div>
         }
         else if (this.state.gameStatus == GameStatus.WON) {
-            return <div>Game OVER</div>
+            return <div>
+                <h4>Game OVER</h4>
+                <p>'{this.state.winner}' WINS</p>
+            </div>
         } else {
             return <div></div>;
         }
@@ -115,27 +134,25 @@ export class GameBoard extends React.Component<any, GameBoardState> {
 
     componentDidUpdate(prevProps: any) {
         if (this.props.gameId !== prevProps.gameId) {
-            this.setState({
-                board: this._populateGameBoard()
-            });
+            this._handleNewGameClick();
         }
     }
 
     render() {
         console.log(this.state.board);
         return (
-            <div>
+            <StyledGameBoardWrapper>
                 {this._renderGameStatus()}
                 <StyledGameBoard>
                     {this.state.board.map((data, idx) => (
                         <div key={Math.floor(Math.random() * Math.floor(12000))} className="gameBoardContainer__row">
                             {data.map((colData, index) => (
-                                <BoardCell key={Math.floor(Math.random() * Math.floor(20000))} onCellClickHandler={this._updateCellState(index, idx)} value={colData}></BoardCell>
+                                <BoardCell key={Math.floor(Math.random() * Math.floor(20000))} disableClick={this.state.gameStatus !== (GameStatus.IN_PROGRESS || GameStatus.NEW)} onCellClickHandler={this._updateCellState(index, idx)} value={colData}></BoardCell>
                             ))}
                         </div>
                     ))}
                 </StyledGameBoard>
-            </div>
+            </StyledGameBoardWrapper>
         );
     }
 }

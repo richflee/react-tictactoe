@@ -1,16 +1,28 @@
 import * as React from 'react';
 import Button from '../../components/Button/Button';
 import { GameBoard } from '../GameBoard/GameBoard';
+import styled from 'styled-components';
 
 interface BoardCellState {
-    value: 'x' | 'o' | '-'
+    value: 'x' | 'o' | '-',
+    disableClick: boolean
 }
+
+const StyledBoardCell = styled.button`
+    background: transparent;
+    color: #e9ea77;
+    font-size: 5em;
+    &:active {
+        background-color: #e9ea77;
+    }
+`;
 
 export class BoardCell extends React.Component<any, BoardCellState> {
     constructor(props: any) {
         super(props);
         this.state = {
-            value: props.value
+            value: props.value,
+            disableClick: props.disableClick
         }
 
         this._onClickHandler = this._onClickHandler.bind(this);
@@ -22,7 +34,7 @@ export class BoardCell extends React.Component<any, BoardCellState> {
 
     render() {
         return (
-            <button onClick={() => this._onClickHandler()}>{this.state.value}</button>
+            <StyledBoardCell disabled={this.state.disableClick} onClick={() => this._onClickHandler()}>{this.state.value}</StyledBoardCell>
         );
     }
 }

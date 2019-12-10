@@ -1,82 +1,22 @@
-export function isGameWon(player: string, board: string[][]): boolean {
-    const currPlayer = player;
+const winningCombinations = [
+    parseInt("111000000", 2),
+    parseInt("000111000", 2),
+    parseInt("000000111", 2),
+    parseInt("100100100", 2),
+    parseInt("010010010", 2),
+    parseInt("001001001", 2),
+    parseInt("100010001", 2),
+    parseInt("001010100", 2)
+ ];
+
+export function isGameWon(player: string, board: string[]): boolean {
 
     if (!board) {
         return false;
     }
 
-    for (let row = 0; row < board.length; row++) {
-        const firstRow = board[row];
-        let allMatch = firstRow.filter(cell => cell !== currPlayer).length === 0;
+    const binaryBoardState = board.map(val => val === player ? '1' : '0').join("");
+    const playerState = parseInt(binaryBoardState, 2);
 
-        if (allMatch) {
-            return true;
-        }
-
-        if (row === 0 && isVerticalCombination(player, board)) {
-            return true;
-        }
-    }
-
-    if (isDiagonalCombination(player, board)) {
-        return true;
-    }
-
-    return false;
-}
-
-function isVerticalCombination(player: string, board: string[][]): boolean {
-
-    const row = 0;
-    const firstRow = board[0];
-    const rowMax = board.length - 1;
-    const colCount = firstRow.length;
-
-    for (let colIdx = 0; colIdx < colCount; colIdx++) {
-
-        if (firstRow[colIdx] === '-') {
-            continue;
-        }
-
-        if (firstRow[colIdx] === board[rowMax][colIdx] && board[rowMax][colIdx] === board[row + 1][colIdx]) {
-            return true;
-        }
-    }
-}
-
-function iterateDiagonally(startingXPoint: number, colShiftValue: number, board: string[][]): boolean {
-
-    let colIdx = startingXPoint;
-    let prevValue = undefined;
-    let isCombination = true;
-    let iterations = 0;
-    let rowIdx = 0;
-
-    while (iterations < board.length) {
-        if (board[rowIdx][colIdx] === '-') {
-            return false;
-        }
-
-        if (iterations === 0) {
-            isCombination = true;
-        } else {
-            isCombination = board[rowIdx][colIdx] === prevValue;
-        }
-
-        if (!isCombination) {
-            break;
-        }
-        
-        prevValue = board[rowIdx][colIdx];
-        colIdx += colShiftValue;
-        rowIdx++;
-        iterations++;
-    }
-
-    return isCombination;
-}
-
-function isDiagonalCombination(player: string, board: string[][]): boolean {
-    let leftToRightResult = iterateDiagonally(0, 1, board);
-    return leftToRightResult ? leftToRightResult : iterateDiagonally(board[0].length - 1, -1, board);
+    return winningCombinations.filter(mask => (playerState & mask) === mask).length > 0;
 }
