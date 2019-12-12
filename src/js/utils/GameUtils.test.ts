@@ -2,78 +2,91 @@ import * as GameUtils from './GameUtils';
 
 describe('isGameWon', () => {
 
-    test('returns false for undefined board', () => {
-        const mockBoard: string[][] = undefined;
-        expect(GameUtils.isGameWon('x', mockBoard)).toBe(false);
+    test('returns undefined for undefined board', () => {
+        const mockBoard: string[] = undefined;
+        expect(GameUtils.isGameWon('x', mockBoard)).toBeUndefined();
     });
 
-    test('returns true for horizontal row winner', () => {
-        const mockBoard: string[][] = [
+    test('returns a string for horizontal row winner', () => {
+        const mockBoard: string[] = [
             [ 'x', 'x', 'x' ],
             [ '-', '-', '-' ],
-            [ '-', '-', '-' ],
-        ];
-
-        expect(GameUtils.isGameWon('x', mockBoard)).toBe(true);
+            [ '-', '-', '-' ]
+        ].reduce((prev, curr) => {
+            return prev.concat(curr);
+        }, []);
+        expect(GameUtils.isGameWon('x', mockBoard)).toBeDefined();
     });
 
-    test('returns true for vertical row winner', () => {
-        const mockBoard: string[][] = [
+    test('returns a string for vertical row winner', () => {
+        const mockBoard: string[] = [
             [ '-', 'x', '-' ],
             [ '-', 'x', '-' ],
             [ '-', 'x', '-' ],
-        ];
+        ].reduce((prev, curr) => {
+            return prev.concat(curr);
+        }, []);
 
-        expect(GameUtils.isGameWon('x', mockBoard)).toBe(true);
+        expect(GameUtils.isGameWon('x', mockBoard)).toBeDefined();
     });
 
-    test('returns true for diagonal combination', () => {
-        const mockBoard: string[][] = [
+    test('returns a string for diagonal combination', () => {
+        const mockBoard: string[] = [
             [ 'x', 'o', '-' ],
             [ '-', 'x', '-' ],
             [ '-', 'o', 'x' ],
-        ];
+        ].reduce((prev, curr) => {
+            return prev.concat(curr);
+        }, []);
 
-        expect(GameUtils.isGameWon('x', mockBoard)).toBe(true);
+        expect(GameUtils.isGameWon('x', mockBoard)).toBeDefined();
     });
 
-    test('returns true for R-to-L diagonal combination', () => {
-        const mockBoard: string[][] = [
-            [ 'o', 'o', 'x' ],
-            [ '-', 'x', '-' ],
+    test('returns a string for R-to-L diagonal combination', () => {
+        const mockBoard: string[] = [
+            [ 'x', 'o', 'x' ],
+            [ 'o', 'x', '-' ],
             [ 'x', 'o', '-' ],
-        ];
+        ].reduce((prev, curr) => {
+            return prev.concat(curr);
+        }, []);
 
-        expect(GameUtils.isGameWon('x', mockBoard)).toBe(true);
+        expect(GameUtils.isGameWon('x', mockBoard)).toBeDefined();
     });
 
-    test('returns false for blank board', () => {
-        const mockBoard: string[][] = [
+    test('returns undefined for blank board', () => {
+        const mockBoard: string[] = [
             [ '-', '-', '-' ],
             [ '-', '-', '-' ],
             [ '-', '-', '-' ],
-        ];
+        ].reduce((prev, curr) => {
+            return prev.concat(curr);
+        }, []);
 
-        expect(GameUtils.isGameWon('x', mockBoard)).toBe(false);
+        expect(GameUtils.isGameWon('x', mockBoard)).toBeUndefined();
     });
 
-    test('returns false for full board', () => {
-        const mockBoard: string[][] = [
+    test('returns undefined for full board', () => {
+        const mockBoard: string[] = [
             [ 'x', 'x', 'o' ],
             [ 'o', 'x', 'x' ],
             [ 'x', 'o', 'o' ],
-        ];
+        ].reduce((prev, curr) => {
+            return prev.concat(curr);
+        }, []);
 
-        expect(GameUtils.isGameWon('x', mockBoard)).toBe(false);
+        expect(GameUtils.isGameWon('x', mockBoard)).toBeUndefined();
     });
 
-    test('returns false for bad combo', () => {
-        const mockBoard: string[][] = [
+    test('returns undefined for bad combo', () => {
+        const mockBoard: string[] = [
             [ 'x', '-', '-' ],
             [ '-', 'x', '-' ],
             [ '-', '-', 'o' ],
-        ];
+        ].reduce((prev, curr) => {
+            return prev.concat(curr);
+        }, []);
 
-        expect(GameUtils.isGameWon('x', mockBoard)).toBe(false);
+        expect(GameUtils.isGameWon('x', mockBoard)).toBeUndefined();
     });
 });
