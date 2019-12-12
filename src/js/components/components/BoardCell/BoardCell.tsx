@@ -9,17 +9,23 @@ interface BoardCellState {
 
 const StyledBoardCell = styled.button`
     background: transparent;
+    border: 1px solid #e9ea77;
     color: #e9ea77;
     font-size: 5em;
     &.highlight {
         background-color: #e9ea77;
-        color: blue;
+        color: #46185f;
     }
     &:active {
         background-color: #e9ea77;
     }
     &:disabled {
-        color: grey;
+        color: rgba(255, 255, 255, 0.33);
+        &.highlight {
+            background-color: #e9ea77;
+            border: 1px solid #46185f;
+            color: #46185f;
+        }
     }
 `;
 
