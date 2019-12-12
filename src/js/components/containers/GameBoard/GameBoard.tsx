@@ -24,7 +24,6 @@ const StyledGameBoard = styled.div`
         display: flex;
         
         > * {
-            border: 1px solid #e9ea77;
             flex-grow: 1;
             min-width: 2em;
             min-height: 2em;
@@ -159,7 +158,6 @@ export class GameBoard extends React.Component<any, GameBoardState> {
     }
 
     render() {
-        console.log(this.state.board);
         return (
             <StyledGameBoardWrapper>
                 {this._renderGameStatus()}
