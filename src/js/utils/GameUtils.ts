@@ -1,22 +1,32 @@
 const winningCombinations = [
-    parseInt("111000000", 2),
-    parseInt("000111000", 2),
-    parseInt("000000111", 2),
-    parseInt("100100100", 2),
-    parseInt("010010010", 2),
-    parseInt("001001001", 2),
-    parseInt("100010001", 2),
-    parseInt("001010100", 2)
- ];
+    "111000000",
+    "000111000",
+    "000000111",
+    "100100100",
+    "010010010",
+    "001001001",
+    "100010001",
+    "001010100"
+];
 
-export function isGameWon(player: string, board: string[]): boolean {
+export function isGameWon(player: string, board: string[]): string {
 
     if (!board) {
-        return false;
+        return undefined;
     }
 
     const binaryBoardState = board.map(val => val === player ? '1' : '0').join("");
-    const playerState = parseInt(binaryBoardState, 2);
+    const playerStateMask = parseInt(binaryBoardState, 2);
+    const matchingIndexes = findMaskMatches(winningCombinations, playerStateMask);
+    return winningCombinations[matchingIndexes[0]];
+}
 
-    return winningCombinations.filter(mask => (playerState & mask) === mask).length > 0;
+function findMaskMatches(winningCombinations: string[], mask: number): number[] {
+    const filteredCombos = winningCombinations.reduce((acc, combo, idx) => {
+        const comboMask = parseInt(combo, 2);
+        const result = (mask & comboMask) === comboMask ? idx : undefined;
+        acc.push(result);
+        return acc;
+    }, []).filter(result => result !== undefined);
+    return filteredCombos;
 }

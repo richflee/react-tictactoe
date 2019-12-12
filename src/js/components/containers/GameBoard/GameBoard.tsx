@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { BoardCell } from '../Home/Home';
+import { BoardCell } from '../../components/BoardCell/BoardCell';
 import * as GameUtils from '../../../utils/GameUtils';
 
 enum GameStatus {
@@ -38,7 +38,8 @@ interface GameBoardState {
     board: string[][],
     currentPlayer: 'x' | 'o',
     gameStatus: GameStatus,
-    winner: string
+    winner: string,
+    winningState: string[][]
 }
 
 export class GameBoard extends React.Component<any, GameBoardState> {
@@ -48,7 +49,8 @@ export class GameBoard extends React.Component<any, GameBoardState> {
         this.state = {
             board: this._populateGameBoard(),
             currentPlayer: 'x',
-            gameStatus: GameStatus.IN_PROGRESS
+            gameStatus: GameStatus.IN_PROGRESS,
+            winningState: undefined
         } as GameBoardState;
     }
 
@@ -63,7 +65,8 @@ export class GameBoard extends React.Component<any, GameBoardState> {
             board: newBoard,
             currentPlayer: player,
             winner: undefined,
-            gameStatus: GameStatus.NEW
+            gameStatus: GameStatus.IN_PROGRESS,
+            winningState: undefined
         });
     }
 
@@ -87,13 +90,29 @@ export class GameBoard extends React.Component<any, GameBoardState> {
         return this.state.currentPlayer === 'x' ? 'o' : 'x';
     }
 
-    _isGameWon(player: string, board: string[][]) {
+    _isGameWon(player: string, board: string[][]): string[][] {
 
         const flatBoard = board.reduce((prev, curr) => {
             return prev.concat(curr);
         }, [])
 
-        return GameUtils.isGameWon(player, flatBoard);
+        const resultCombination = GameUtils.isGameWon(player, flatBoard);
+        const resultBoard: string[][] = [];
+
+        if (resultCombination !== undefined) {
+            const chars = resultCombination.split("");
+            const colCount = 3;
+
+            const segmentCount = Math.floor(chars.length / colCount);
+            let startingX = 0;
+
+            for (let index = 0; index < segmentCount; index++) {
+                const sliced = chars.slice(startingX, startingX + colCount);
+                resultBoard.push(sliced);
+                startingX += colCount;
+            }
+        }
+        return resultBoard;
     }
 
     _updateCellState(colIndex: number, rowIndex: number) {
@@ -109,10 +128,11 @@ export class GameBoard extends React.Component<any, GameBoardState> {
 
             const won = this._isGameWon(currPlayer, cp);
 
-            if (won) {
+            if (won !== undefined && won.length > 0) {
                 this.setState({
                     gameStatus: GameStatus.WON,
-                    winner: won ? currPlayer : undefined
+                    winner: won ? currPlayer : undefined,
+                    winningState: won
                 })
             }
         }
@@ -147,7 +167,7 @@ export class GameBoard extends React.Component<any, GameBoardState> {
                     {this.state.board.map((data, idx) => (
                         <div key={Math.floor(Math.random() * Math.floor(12000))} className="gameBoardContainer__row">
                             {data.map((colData, index) => (
-                                <BoardCell key={Math.floor(Math.random() * Math.floor(20000))} disableClick={this.state.gameStatus !== (GameStatus.IN_PROGRESS || GameStatus.NEW)} onCellClickHandler={this._updateCellState(index, idx)} value={colData}></BoardCell>
+                                <BoardCell highlight={this.state.gameStatus === GameStatus.WON && this.state.winningState[idx][index] === "1" } key={Math.floor(Math.random() * Math.floor(20000))} disableClick={this.state.gameStatus !== (GameStatus.IN_PROGRESS || GameStatus.NEW)} onCellClickHandler={this._updateCellState(index, idx)} value={colData}></BoardCell>
                             ))}
                         </div>
                     ))}
