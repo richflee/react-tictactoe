@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { BoardCell } from '../../components/BoardCell/BoardCell';
 import * as GameUtils from '../../../utils/GameUtils';
+import * as Utils from '../../../utils/Utils';
 
 enum GameStatus {
     NEW,
@@ -17,7 +18,7 @@ const StyledGameBoardWrapper = styled.div`
 `;
 
 const StyledGameBoard = styled.div`
-    border: 1px solid #e9ea77;
+    border: 1px solid purple;
     font-size: 1em;
     max-width: 600px;
     > .gameBoardContainer__row {
@@ -54,10 +55,7 @@ export class GameBoard extends React.Component<any, GameBoardState> {
     }
 
     _handleNewGameClick() {
-        // reset board
         const newBoard = this._populateGameBoard();
-
-        // update state
         const player = this._toggleCurrentPlayer();
 
         this.setState({
@@ -75,11 +73,7 @@ export class GameBoard extends React.Component<any, GameBoardState> {
         let board = [];
 
         for (let i = 0; i < rowCount; i++) {
-            let row = [];
-            for (let j = 0; j < columnCount; j++) {
-                row.push('-');
-            }
-            board.push(row);
+            board.push(new Array(columnCount).fill('-'));
         }
 
         return board;
@@ -95,23 +89,19 @@ export class GameBoard extends React.Component<any, GameBoardState> {
             return prev.concat(curr);
         }, [])
 
-        const resultCombination = GameUtils.isGameWon(player, flatBoard);
-        const resultBoard: string[][] = [];
+        const winningBinaryCombination = GameUtils.isGameWon(player, flatBoard);
+        let winningBinaryBoard: string[][] = [];
 
-        if (resultCombination !== undefined) {
-            const chars = resultCombination.split("");
+        if (winningBinaryCombination !== undefined) {
+            const chars = winningBinaryCombination.split("");
             const colCount = 3;
-
             const segmentCount = Math.floor(chars.length / colCount);
-            let startingX = 0;
-
-            for (let index = 0; index < segmentCount; index++) {
-                const sliced = chars.slice(startingX, startingX + colCount);
-                resultBoard.push(sliced);
-                startingX += colCount;
-            }
+            winningBinaryBoard = new Array(segmentCount).fill(undefined).map((el, idx) => {
+                return chars.slice(idx * segmentCount, (idx * segmentCount) + colCount);
+            });
         }
-        return resultBoard;
+
+        return winningBinaryBoard;
     }
 
     _updateCellState(colIndex: number, rowIndex: number) {
@@ -143,8 +133,8 @@ export class GameBoard extends React.Component<any, GameBoardState> {
         }
         else if (this.state.gameStatus == GameStatus.WON) {
             return <div>
-                <h4>Game OVER</h4>
-                <p>'{this.state.winner}' WINS</p>
+                <h4>Game over</h4>
+                <p>🎉'{this.state.winner}' wins 🎉</p>
             </div>
         } else {
             return <div></div>;
@@ -163,9 +153,9 @@ export class GameBoard extends React.Component<any, GameBoardState> {
                 {this._renderGameStatus()}
                 <StyledGameBoard>
                     {this.state.board.map((data, idx) => (
-                        <div key={Math.floor(Math.random() * Math.floor(12000))} className="gameBoardContainer__row">
+                        <div key={Utils.generateElementKey(20000)} className="gameBoardContainer__row">
                             {data.map((colData, index) => (
-                                <BoardCell highlight={this.state.gameStatus === GameStatus.WON && this.state.winningState[idx][index] === "1" } key={Math.floor(Math.random() * Math.floor(20000))} disableClick={this.state.gameStatus !== (GameStatus.IN_PROGRESS || GameStatus.NEW)} onCellClickHandler={this._updateCellState(index, idx)} value={colData}></BoardCell>
+                                <BoardCell highlight={this.state.gameStatus === GameStatus.WON && this.state.winningState[idx][index] === "1" } key={Utils.generateElementKey(12000)} disableClick={this.state.gameStatus !== (GameStatus.IN_PROGRESS || GameStatus.NEW)} onCellClickHandler={this._updateCellState(index, idx)} value={colData}></BoardCell>
                             ))}
                         </div>
                     ))}

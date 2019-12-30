@@ -9,6 +9,12 @@ const winningCombinations = [
     "001010100"
 ];
 
+/**
+ * 
+ * @param player string describing current player
+ * @param board flat array of board state
+ * @returns Returns a binary combination if the board argument contains a winning combination
+ */
 export function isGameWon(player: string, board: string[]): string {
 
     if (!board) {

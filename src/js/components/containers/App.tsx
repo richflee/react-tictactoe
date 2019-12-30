@@ -6,7 +6,7 @@ require('./App.css');
 
 
 const StyledAppContainer = styled.div`
-    color: #fff;
+    color: #297ca0;
     font-size: 1em;
     padding: 0.8em;
     text-align: center;
