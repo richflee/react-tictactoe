@@ -7,20 +7,27 @@ interface BoardCellState {
     highlight: boolean
 }
 
+interface BoardCellProps {
+    value: string,
+    disableClick: boolean,
+    highlight: boolean,
+    onCellClickHandler: () => any
+}
+
 const StyledBoardCell = styled.button`
     background: transparent;
-    border: 1px solid #e9ea77;
-    color: #e9ea77;
+    border: 1px solid purple;
+    color: #12cad6;
     font-size: 5em;
     &.highlight {
-        background-color: #e9ea77;
-        color: #46185f;
+        background-color: purple;
+        color: #e9ea77;
     }
     &:active {
         background-color: #e9ea77;
     }
     &:disabled {
-        color: rgba(255, 255, 255, 0.33);
+        color: rgba(18, 201, 214, 0.35);
         &.highlight {
             background-color: #e9ea77;
             border: 1px solid #46185f;
@@ -29,7 +36,7 @@ const StyledBoardCell = styled.button`
     }
 `;
 
-export class BoardCell extends React.Component<any, BoardCellState> {
+export class BoardCell extends React.Component<BoardCellProps, BoardCellState> {
     constructor(props: any) {
         super(props);
         this.state = {

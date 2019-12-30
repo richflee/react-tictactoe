@@ -4,3 +4,7 @@ export function generateUUID(): string {
         return v.toString(16);
     });
 }
+
+export function generateElementKey(upperBounds: number): number {
+    return Math.floor(Math.random() * Math.floor(upperBounds));
+} 
