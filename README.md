@@ -1,5 +1,26 @@
 # React Boilerplate
 
-### Roadmap
+## Setup and usage
 
-Coming soon...
+### System requirements
+
+  - Node
+  - NPM
+
+### Installation
+
+`
+$ npm i
+`
+
+### To run
+
+`
+$ npm start
+`
+
+### To run tests
+
+`
+$ npm test
+`
